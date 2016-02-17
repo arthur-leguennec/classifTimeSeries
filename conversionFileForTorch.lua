@@ -1,0 +1,76 @@
+require 'csvigo';
+require 'torch';
+require 'cunn';
+
+
+function conversionCSV(filename, mode_cuda)
+    --- Converts CVS file to a tensor for torch.
+    --- Return a tensor and a table of classes
+    --- Warning: Works only with the UCR datasets (see http://www.cs.ucr.edu/~eamonn/time_series_data/).
+    local mode_cuda = mode_cuda or false
+    local datasetcsv = csvigo.load({path=filename, mode='raw'})
+    local dataset = {}
+    local classes = {}
+
+    if mode_cuda ~= true then
+        mode_cuda = false
+    else
+        mode_cuda = true
+    end
+
+    function dataset:size()
+        return #datasetcsv
+    end
+    function dataset:sizeData()
+        return  #datasetcsv[1] - 1
+    end
+
+    local data = torch.DoubleTensor(dataset:size(), 1, dataset:sizeData())
+    local label = torch.ByteTensor(dataset:size())
+
+    for i=1,dataset:size() do
+        for j=2,#datasetcsv[i] do
+            data[i][1][j-1] = datasetcsv[i][j]
+        end
+        label[i] = datasetcsv[i][1]
+
+        classes[label[i]] = label[i]
+    end
+
+    if mode_cuda == true then
+        dataset.data = data:cuda()
+        dataset.label = label:cuda()
+    else
+        dataset.data = data
+        dataset.label = label
+    end
+
+    setmetatable(dataset,
+        {__index = function(t, i)
+                        return {t.data[i][1], t.label[i]}
+                    end}
+    );
+
+    print(dataset)
+    print(classes)
+
+    function dataset:size()
+        return self.data:size(1)
+    end
+
+    return dataset, classes
+end
+
+
+function normalizeDataset(dataset)
+    local mean = 0   -- store the mean, to normalize the test set in the future
+    local stdv = 0   -- store the standart-deviation for the future
+
+    mean = dataset.data[{ {}, {}, {} }]:mean() -- mean estimation
+    print('Mean: ' .. mean)
+    dataset.data[{ {}, {}, {} }]:add(-mean)    -- mean subtraction
+    stdv = dataset.data[{ {}, {}, {} }]:std()  -- std estimation
+    print('Standart Deviation: ' .. stdv)
+    dataset.data[{ {}, {}, {} }]:div(stdv)     -- std scaling
+    return dataset
+end
