@@ -5,21 +5,25 @@ require 'math';
 function dataAugmentationTimeSeries(dataset, z)
     -- Test for data augmentation
     local size = dataset:size()
-    dataset.data = dataset.data:resize(size*z, 1, dataset:sizeData())
+    dataset.data = dataset.data:resize(size*z, dataset:sizeData(), 1)
     dataset.label = dataset.label:resize(size*z)
 
-    for i=1,(dataset:size()-size) do
+    for i=size+1,z*size do
+        if i % 5000 == 0 then
+            print(i)
+        end
+        dataset.label[i] = dataset.label[i-size]
         for j=1,dataset:sizeData() do
             num = math.random() - 0.5
-            
             if num < 0 then
-                dataset[i+size][1][j] = dataset[i][1][j] * (1.01)
+                dataset.data[i][j][1] = dataset.data[i-size][j][1] * (1.005)
             elseif num > 0 then
-                dataset[i+size][1][j] = dataset[i][1][j] * (0.99)
+                dataset.data[i][j][1] = dataset.data[i-size][j][1] * (0.995)
             else
-                dataset[i+size][1][j] = dataset[i][1][j]
+                dataset.data[i][j][1] = dataset.data[i-size][j][1]
             end
         end
     end
+    print(dataset)
     return dataset
 end

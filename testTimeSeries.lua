@@ -1,9 +1,17 @@
+------------------------------------------------------------------------------
+---------------- Creation file : 02/18/2016 ----------------------------------
+---------------- Author : Arthur Le Guennec ----------------------------------
+---------------- Description : main file for deep learning on time series ----
+------------------------------------------------------------------------------
+
 require 'nn';
-require 'image';
 require 'cunn';
 require 'itorch';
 require 'paths';
 
+require("model");
+require("train");
+require("test");
 require("conversionFileForTorch");
 require("dataAugmentation");
 
@@ -22,8 +30,13 @@ cmd:option('-iter', 5, 'max iteration for training')
 params = cmd:parse(arg)
 
 if params.pathData == '' then
-    fileTrain = params.fileTrain
-    fileTest = params.fileTest
+    if params.fileTrain == '' or params.fileTest == '' then
+        fileTrain = '/home/arthur/Downloads/UCR_TS_Archive_2015/ECG5000/ECG5000_TRAIN'
+        fileTest = '/home/arthur/Downloads/UCR_TS_Archive_2015/ECG5000/ECG5000_TEST'
+    else
+        fileTrain = params.fileTrain
+        fileTest = params.fileTest
+    end
 else
     fileTrain = params.pathData .. paths.basename(params.pathData) .. '_TRAIN'
     fileTest = params.pathData .. paths.basename(params.pathData) .. '_TEST'
@@ -38,27 +51,18 @@ maxIteration = params.iter
 -- -- -- -- -- 1. Load and normalize data -- -- -- -- -- -- -- -- -- ---- -- --
 trainset, classes = conversionCSV(fileTrain, mode_cuda)
 trainset = normalizeDataset(trainset)
-trainset = dataAugmentationTimeSeries(trainset, 10)
+-- trainset = dataAugmentationTimeSeries(trainset, 5)
 testset, _ = conversionCSV(fileTest, mode_cuda)
 testset = normalizeDataset(testset)
+print('\nThere are ' .. #classes .. ' classes in this datasets.')
 print('\n\n')
 
 -- -- -- -- -- -- 2. Define Neural Network -- -- -- -- -- -- -- -- -- -- -- -- --
-net = nn.Sequential()
--- net:add(nn.TemporalConvolution(5, 1, 3))
--- net:add(nn.ReLU())
--- net:add(nn.View(136))
--- net:add(nn.Linear(trainset:sizeData(), 5000))        -- fully connected layer (matrix multiplication between inputs and weights)
--- net:add(nn.ReLU())
-net:add(nn.Linear(trainset:sizeData(), 500))        -- fully connected layer (matrix multiplication between inputs and weights)
-net:add(nn.ReLU())
-net:add(nn.Linear(500, #classes))
-net:add(nn.LogSoftMax())
+printTitleModel()
+net = neuralNetworkLenet(net, trainset:sizeData(), #classes)
 if mode_cuda == true then
     net = net:cuda()
 end
-
-print('Neural Network test\n' .. net:__tostring())       -- print the model
 
 -- -- -- -- -- -- 3. Define Loss function  -- -- -- -- -- -- -- -- -- -- -- -- --
 criterion = nn.ClassNLLCriterion() -- a negative log-likelihood criterion for multi-class classification
@@ -68,38 +72,12 @@ if mode_cuda == true then
 end
 
 -- -- -- -- -- -- 4. Train network on training data -- -- -- -- -- -- -- -- -- --
-trainer = nn.StochasticGradient(net, criterion)
-trainer.learningRate = learningRate
-trainer.maxIteration = maxIteration    -- just do 5 epochs of training
-timer = torch.Timer()
-trainer:train(trainset)
+printTitleTrain()
 
--- print(net.modules
-
--- for i = 1,trainset:size() do
---     -- random sample
---     local input = trainset.data[i][1];     -- normally distributed example in 2d
---     local output = trainset.label[i];
---
---     -- feed it to the neural network and the criterion
---     net:forward(input)
---     criterion:forward(net:forward(input), output)
---
---     -- train over this example in 3 steps
---     -- (1) zero the accumulation of the gradients
---     net:zeroGradParameters()
---     -- (2) accumulate gradients
---     net:backward(input, criterion:backward(net.output, output))
---     -- (3) update parameters with a 0.01 learning rate
---     net:updateParameters(0.02)
--- end
-
-
-timer:stop()
-print(timer:time().real .. ' seconds for training the network.')
-timer:reset()
+train(net, criterion, learningRate, maxIteration)
 
 -- -- -- -- -- -- 5. Test network on test data   -- -- -- -- -- -- -- -- -- -- --
+printTitleTest()
 class_performance = {}
 num_ex_classes = {}
 num_ex_classes_train = {}
@@ -119,7 +97,7 @@ correct = 0
 timer:resume()
 for i=1,testset:size() do
     local groundtruth = testset.label[i]
-    local prediction = net:forward(testset.data[i][1])
+    local prediction = net:forward(testset.data[i])
     local confidences, indices = torch.sort(prediction, true)
     if groundtruth == indices[1] then
         correct = correct + 1
@@ -128,17 +106,21 @@ for i=1,testset:size() do
     num_ex_classes[groundtruth] = num_ex_classes[groundtruth] + 1
 end
 timer:stop()
-print('\n')
-print(correct .. ' right answers, so', 100*correct/testset:size() .. '% accuracy in ' .. timer:time().real .. ' seconds.')
+print('')
 
 for k in pairs(classes) do
-    print('Class ' .. classes[k])
-    print('Good answers:', class_performance[k])
-    print('Number of data test:', num_ex_classes[k])
-    print('Number of data train:', num_ex_classes_train[k])
+    print('+-------------------------------------------------------+')
+    print('|\t\t\t Class ' .. classes[k] .. '\t\t\t|')
+    print('|=======================================================|')
+    print('| Good answers: ' .. class_performance[k], '\t\t\t\t|')
+    print('| Number of data test: ' .. num_ex_classes[k], '\t\t\t|')
+    print('| Number of data train: ' .. num_ex_classes_train[k], '\t\t\t|')
+    print('| Percentage of accuracy: ' .. string.format("%.2f", class_performance[k]*100/num_ex_classes[k]) .. ' %\t\t\t|')
+    print('+-------------------------------------------------------+')
     print('')
 end
 
+print(correct .. ' right answers, so', 100*correct/testset:size() .. '% accuracy in ' .. timer:time().real .. ' seconds.')
+
 timerGlobal:stop()
-print('')
-print('Script executed in ' .. timerGlobal:time().real .. ' secondes.')
+print('\n\nScript executed in ' .. timerGlobal:time().real .. ' secondes.')

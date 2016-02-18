@@ -1,3 +1,10 @@
+------------------------------------------------------------------------------
+---------------- Creation file : 02/18/2016 ----------------------------------
+---------------- Author : Arthur Le Guennec ----------------------------------
+---------------- Description : file for conversion the data for torch --------
+------------------------------------------------------------------------------
+
+
 require 'csvigo';
 require 'torch';
 require 'cunn';
@@ -25,12 +32,12 @@ function conversionCSV(filename, mode_cuda)
         return  #datasetcsv[1] - 1
     end
 
-    local data = torch.DoubleTensor(dataset:size(), 1, dataset:sizeData())
+    local data = torch.DoubleTensor(dataset:size(), dataset:sizeData(), 1)
     local label = torch.ByteTensor(dataset:size())
 
     for i=1,dataset:size() do
         for j=2,#datasetcsv[i] do
-            data[i][1][j-1] = datasetcsv[i][j]
+            data[i][j-1] = datasetcsv[i][j]
         end
         label[i] = datasetcsv[i][1]
 
@@ -47,12 +54,12 @@ function conversionCSV(filename, mode_cuda)
 
     setmetatable(dataset,
         {__index = function(t, i)
-                        return {t.data[i][1], t.label[i]}
+                        return {t.data[i], t.label[i]}
                     end}
     );
 
-    print(dataset)
-    print(classes)
+    -- print(dataset)
+    -- print(classes)
 
     function dataset:size()
         return self.data:size(1)
