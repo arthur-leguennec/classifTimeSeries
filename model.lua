@@ -77,10 +77,10 @@ function neuralNetworkLenet(net, sizeData, nb_class)
     net:add(nn.TemporalConvolution(1, 1, 5))     -- 3 input image channels, 6 outputs channels, 5x5 convolution kernel
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(2))      -- A max-pooling operation that looks at 2x2 windows and finds the max
-    net:add(nn.TemporalConvolution(1, 3, 5))
+    net:add(nn.TemporalConvolution(1, 3, 10))
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(2))
-    local num = (  math.floor((math.floor((sizeData-5+1)/2) - 5 + 1)/2)*3  )
+    local num = (  math.floor((math.floor((sizeData-5+1)/2) - 10 + 1)/2)*3  )
     net:add(nn.View(num))                    -- reshapes from a 3D tensor of 16x5x5 into 1D tensor of 16*5*5
     net:add(nn.Linear(num, 120))             -- fully connected layer (matrix multiplication between inputs and weights)
     -- net:add(nn.View(96))                    -- reshapes from a 3D tensor of 16x5x5 into 1D tensor of 16*5*5
