@@ -4,13 +4,13 @@
 ---------------- Description : file for training the model -------------------
 ------------------------------------------------------------------------------
 
-
 print('\n--------------------------------------------------------------')
 print('-------------------------- Training --------------------------')
 print('--------------------------------------------------------------')
 
 local answer
-local pathTrainModel
+local pathTrainModelLoad
+local pathTrainModelSave
 local trainModel = false
 
 io.write('load a train model (y/n)? (default n)')
@@ -20,16 +20,12 @@ answer = io.read()
 if answer == 'y' then
     io.write('path file? ')
     io.flush()
-    pathTrainModel = io.read()
-    net = torch.load(pathTrainModel)
+    pathTrainModelLoad = io.read()
+    net = torch.load(pathTrainModelLoad)
     trainModel = true
-end
-
-io.write('retrain this model (y/n)? (default n)')
-io.flush()
-answer = io.read()
-
-if answer == 'y' then
+    io.write('retrain this model (y/n)? (default n)')
+    io.flush()
+    answer = io.read()
     trainModel = false
 end
 
@@ -50,14 +46,14 @@ if trainModel == false then
     io.flush()
     answer=io.read()
 
-    if answer ~= 'n' or answer ~= 'N' or answer ~= 'no' then
-        io.write('where? (default test.t7 in this file)')
+    if answer ~= 'n' and answer ~= 'N' and answer ~= 'no' then
+        io.write('where? (default ' .. params.pathData .. paths.basename(params.pathData) .. '.t7)')
         io.flush()
-        pathTrainModel = io.read()
-        if pathTrainModel ~= '' then
-            torch.save(pathTrainModel, net)
+        pathTrainModelSave = io.read()
+        if pathTrainModelSave ~= '' then
+            torch.save(pathTrainModelSave, net)
         else
-            torch.save('./test.t7', net)
+            torch.save(params.pathData .. paths.basename(params.pathData) .. '.t7', net)
         end
     end
 end
