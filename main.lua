@@ -9,9 +9,19 @@ require 'cunn';
 require 'itorch';
 require 'paths';
 
-require("model");
 require("conversionFileForTorch");
 require("dataAugmentation");
+
+print('\n')
+print('+===============================================================+')
+print('|***************************************************************|')
+print('|****-------------------------------------------------------****|')
+print('|****----                                               ----****|')
+print('|****--      Deep Learning on Time Series with torch      --****|')
+print('|****----                                               ----****|')
+print('|****-------------------------------------------------------****|')
+print('|***************************************************************|')
+print('+===============================================================+\n\n')
 
 timerGlobal = torch.Timer()
 
@@ -26,8 +36,11 @@ print('\nThere are ' .. #classes .. ' classes in this datasets.')
 print('\n\n')
 
 -- -- -- -- -- -- 2. Define Neural Network -- -- -- -- -- -- -- -- -- -- -- -- --
+dofile("model.lua")
+
 printTitleModel()
-net = neuralNetworkLenet(net, trainset:sizeData(), #classes)
+net = nn.Sequential()
+neuralNetworkLenet()
 if mode_cuda == true then
     net = net:cuda()
 end
@@ -35,6 +48,7 @@ end
 -- -- -- -- -- -- 3. Define Loss function  -- -- -- -- -- -- -- -- -- -- -- -- --
 criterion = nn.ClassNLLCriterion() -- a negative log-likelihood criterion for multi-class classification
 -- criterion = nn.MSECriterion()   -- we choose the Mean Squared Error criterion
+-- criterion = nn.MarginCriterion()
 if mode_cuda == true then
     criterion = criterion:cuda()
 end
