@@ -33,7 +33,7 @@ function conversionCSV(filename, mode_cuda)
     end
 
     local data = torch.DoubleTensor(dataset:size(), dataset:sizeData(), 1)
-    local label = torch.ByteTensor(dataset:size())
+    local label = torch.CharTensor(dataset:size())
 
     for i=1,dataset:size() do
         for j=2,#datasetcsv[i] do
@@ -66,6 +66,22 @@ function conversionCSV(filename, mode_cuda)
     end
 
     return dataset, classes
+end
+
+
+function shuffledDataset(dataset)
+    y = torch.randperm(dataset:size())
+    local datasetTmp = {}
+
+    for k in pairs(trainset) do
+        datasetTmp[k] = trainset[k]
+    end
+
+    for i=1,dataset:size() do
+        dataset[i] = datasetTmp[y[i]]
+    end
+
+    return dataset
 end
 
 
