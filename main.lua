@@ -24,16 +24,24 @@ print('|***************************************************************|')
 print('+===============================================================+\n\n')
 
 timerGlobal = torch.Timer()
+nb_class = 0
+sizeData = 0
 
 -- -- -- -- -- 0. Command Line -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 dofile("cmdLine.lua")
 
 -- -- -- -- -- 1. Load and normalize data -- -- -- -- -- -- -- -- -- ---- -- --
 trainset, classes = conversionCSV(fileTrain, mode_cuda)
--- trainset = dataAugmentationTimeSeries(trainset, 5)
+for k in pairs(classes) do
+    nb_class = nb_class + 1
+end
+-- trainset = dataAugmentationTimeSeries(trainset, 10)
+-- trainset = shuffledDataset(trainset)
 testset, _ = conversionCSV(fileTest, mode_cuda)
-print('\nThere are ' .. #classes .. ' classes in this datasets.')
+print('\nThere are ' .. nb_class .. ' classes in this datasets.')
 print('\n\n')
+
+sizeData = trainset:sizeData()
 
 -- -- -- -- -- -- 2. Define Neural Network -- -- -- -- -- -- -- -- -- -- -- -- --
 dofile("model.lua")

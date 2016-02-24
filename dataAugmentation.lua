@@ -33,3 +33,22 @@ function dataAugmentationTimeSeries(dataset, z)
     print(dataset)
     return dataset
 end
+
+-------------------------------------------------------------------------------------------------
+-------- TODO augmented the dataset for to have a same number of examples in each classes--------
+-------------------------------------------------------------------------------------------------
+function dataAugmentationTimeSeriesPlus(dataset, classes, z)
+    local size = dataset:size()
+    local nb_class = 0
+    local num_ex_classes_train = {}
+
+    for k in pairs(classes) do
+        nb_class = nb_class + 1
+        nb_ex_classes_train[k] = 0
+    end
+
+    for i=1,dataset:size() do
+        local groundtruth = trainset.label[i]
+        num_ex_classes_train[groundtruth] = num_ex_classes_train[groundtruth] + 1
+    end
+end

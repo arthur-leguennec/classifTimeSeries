@@ -24,6 +24,8 @@ for i=1,trainset:size() do
     num_ex_classes_train[groundtruth] = num_ex_classes_train[groundtruth] + 1
 end
 
+net:evaluate()
+
 correct = 0
 timer = torch.Timer()
 timer:resume()

@@ -73,8 +73,8 @@ function shuffledDataset(dataset)
     y = torch.randperm(dataset:size())
     local datasetTmp = {}
 
-    for k in pairs(trainset) do
-        datasetTmp[k] = trainset[k]
+    for k in pairs(dataset) do
+        datasetTmp[k] = dataset[k]
     end
 
     for i=1,dataset:size() do
