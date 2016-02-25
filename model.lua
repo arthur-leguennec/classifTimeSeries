@@ -11,10 +11,11 @@ function printTitleModel()
 end
 
 function neuralNetwork0()
+    net:add(nn.View(1, sizeData))
     net:add(nn.ReLU())
-    net:add(nn.Linear(sizeData, 1024))
+    net:add(nn.Linear(sizeData, 200))
     net:add(nn.ReLU())
-    net:add(nn.Linear(1024, 200))
+    net:add(nn.Linear(200, 200))
     net:add(nn.ReLU())
     net:add(nn.Linear(200, 500))        -- fully connected layer (matrix multiplication between inputs and weights)
     net:add(nn.ReLU())
@@ -84,15 +85,22 @@ end
 
 
 function neuralNetworkLenet()
-    net:add(nn.TemporalConvolution(1, 1, 5))
+    firstInputConv = 5
+    secondInputConv = 10
+    firstOutputConv = 1
+    secondOutputConv = 3
+    firstMaxPool = 2
+    secondMaxPool = 2
+
+    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv))
     net:add(nn.ReLU())
     -- net:add(nn.Dropout())
-    net:add(nn.TemporalMaxPooling(2))
-    net:add(nn.TemporalConvolution(1, 3, 10))
+    net:add(nn.TemporalMaxPooling(firstMaxPool))
+    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv))
     net:add(nn.ReLU())
     -- net:add(nn.Dropout())
-    net:add(nn.TemporalMaxPooling(2))
-    local num = (  math.floor((math.floor((sizeData-5+1)/2) - 10 + 1)/2)*3  )
+    net:add(nn.TemporalMaxPooling(secondMaxPool))
+    local num = (  math.floor((math.floor((sizeData-firstInputConv+1)/firstMaxPool)*firstOutputConv - secondInputConv + 1)/secondMaxPool)*secondOutputConv  )
     net:add(nn.View(num))
     net:add(nn.Linear(num, 120))
     net:add(nn.ReLU())
