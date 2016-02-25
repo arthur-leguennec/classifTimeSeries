@@ -33,6 +33,14 @@ for i=1,testset:size() do
     local groundtruth = testset.label[i]
     local prediction = net:forward(testset.data[i])
     local confidences, indices = torch.sort(prediction, true)
+
+    -- io.write('press enter for continue ')
+    -- io.flush()
+    -- local answer0=io.read()
+    -- print('groundtruth: ', groundtruth)
+    -- print('indices[1]: ', indices[1])
+    -- print('prediction: ', prediction)
+
     if groundtruth == indices[1] then
         correct = correct + 1
         class_performance[groundtruth] = class_performance[groundtruth] + 1
@@ -55,3 +63,27 @@ for k in pairs(classes) do
 end
 
 print(correct .. ' right answers, so', 100*correct/testset:size() .. '% accuracy in ' .. timer:time().real .. ' seconds.')
+
+
+io.write('save this model ([y]/n)? ')
+io.flush()
+answer=io.read()
+if answer ~= 'n' and answer ~= 'N' and answer ~= 'no' then
+    io.write('where? (default ' .. params.pathData .. paths.basename(params.pathData) .. '.t7) ')
+    io.flush()
+    pathTrainModelSave = io.read()
+    if pathTrainModelSave ~= '' then
+        torch.save(pathTrainModelSave, net)
+    else
+        torch.save(params.pathData .. paths.basename(params.pathData) .. '.t7', net)
+    end
+end
+
+
+io.write('save the result ([y]/n)? ')
+io.flush()
+answer = io.read()
+if answer ~= 'n' and answer ~= 'N' and answer ~= 'no' then
+    local yolo = 'iter, ' .. maxIteration .. '\nlearning_rate, ' .. learningRate .. '\nerror_rate, ' .. 100*correct/testset:size()
+    torch.save(params.pathData .. paths.basename(params.pathData) .. '_' .. maxIteration .. '_iter', yolo)
+end

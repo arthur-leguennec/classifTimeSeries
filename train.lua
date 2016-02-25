@@ -45,19 +45,4 @@ if trainModel == false then
     timer:reset()
 
     timer:stop()
-
-    io.write('save this train model ([y]/n)? ')
-    io.flush()
-    answer=io.read()
-
-    if answer ~= 'n' and answer ~= 'N' and answer ~= 'no' then
-        io.write('where? (default ' .. params.pathData .. paths.basename(params.pathData) .. '.t7) ')
-        io.flush()
-        pathTrainModelSave = io.read()
-        if pathTrainModelSave ~= '' then
-            torch.save(pathTrainModelSave, net)
-        else
-            torch.save(params.pathData .. paths.basename(params.pathData) .. '.t7', net)
-        end
-    end
 end
