@@ -44,6 +44,20 @@ function conversionCSV(filename, mode_cuda)
         classes[label[i]] = label[i]
     end
 
+    local tabTmp = {}
+    local i = 0
+
+    for k in pairs(classes) do
+        i = i + 1
+        tabTmp[k] = i
+    end
+
+    classes = {}
+    for i=1,dataset:size() do
+        label[i] = tabTmp[label[i]]
+        classes[label[i]] = label[i]
+    end
+
     if mode_cuda == true then
         dataset.data = data:cuda()
         dataset.label = label:cuda()
