@@ -12,37 +12,45 @@ local answer
 local pathTrainModelLoad
 local pathTrainModelSave
 local trainModel = false
+local trainModelExist = false
 
 net:training()
 
-io.write('load a train model (y/[n])? ')
-io.flush()
-answer = io.read()
-
-if answer == 'y' or answer == 'yes' or answer =='Y' then
-    io.write('path file? ')
-    io.flush()
-    pathTrainModelLoad = io.read()
-    net = torch.load(pathTrainModelLoad)
-    trainModel = true
-    io.write('retrain this model (y/[n])? ')
+if not script then
+    io.write('load a train model (y/[n])? ')
     io.flush()
     answer = io.read()
+
     if answer == 'y' or answer == 'yes' or answer =='Y' then
-        trainModel = false
+        io.write('path file? ')
+        io.flush()
+        pathTrainModelLoad = io.read()
+        net = torch.load(pathTrainModelLoad)
+        trainModel = true
+        io.write('retrain this model (y/[n])? ')
+        io.flush()
+        answer = io.read()
+        if answer == 'y' or answer == 'yes' or answer =='Y' then
+            trainModel = false
+        end
     end
 end
 
 if trainModel == false then
     trainer = nn.StochasticGradient(net, criterion)
     trainer.learningRate = learningRate
-    trainer.maxIteration = maxIteration    -- just do 15 epochs of training by default
+    trainer.maxIteration = maxIteration
     timer = torch.Timer()
     trainer:train(trainset)
 
     timer:stop()
     print(timer:time().real .. ' seconds for training the network.')
     timer:reset()
+    if script then
+        torch.save(fileTrain .. '_script_' .. 'leNet' .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
+    else
+        torch.save(fileTrain .. '_' .. 'leNet' .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
+    end
 
     timer:stop()
 end
