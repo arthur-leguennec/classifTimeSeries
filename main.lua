@@ -32,13 +32,18 @@ id = ''
 
 -- -- -- -- -- 0. Command Line -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 dofile("cmdLine.lua")
+print('Iter: ' .. maxIteration)
+print('Learning rate: ' .. learningRate)
+print('Learning rate decay: ' .. learningRateDecay .. '\n\n')
 
 -- -- -- -- -- 1. Load and normalize data -- -- -- -- -- -- -- -- -- ---- -- --
 trainset, classes = conversionCSV(fileTrain, mode_cuda)
 for k in pairs(classes) do
     nb_class = nb_class + 1
 end
--- trainset = dataAugmentationTimeSeries(trainset, 5)
+if dataAug > 1 then
+    trainset = dataAugmentationTimeSeries(trainset, dataAug)
+end
 trainset = shuffledDataset(trainset)
 testset, _ = conversionCSV(fileTest, mode_cuda)
 print('\nThere are ' .. nb_class .. ' classes in this datasets.')
@@ -46,30 +51,33 @@ print('\n\n')
 
 sizeData = trainset:sizeData()
 
--- for i=1,20 do
---     print('testset.label[' .. i .. '] = ' , testset.label[i])
--- end
 -- -- -- -- -- -- 2. Define Neural Network -- -- -- -- -- -- -- -- -- -- -- -- --
 dofile("model.lua")
 
 printTitleModel()
 net = nn.Sequential()
-if model == 'leNet' then
-    neuralNetworkLenet()
+if model == 'leNet1' then
+    neuralNetworkLenet1()
 elseif model == 'neuralNetwork0' then
     neuralNetwork0()
 elseif model == 'neuralNetwork1' then
     neuralNetwork1()
+elseif model == 'leNet2' then
+    neuralNetworkLenet2()
+elseif model == 'mcdcnn' then
+    neuralNetwork_MCDCNN()
 else
-    neuralNetworkLenet()
+    neuralNetworkLenet1()
 end
-
+print('\n' .. id)
 
 if mode_cuda == true then
     net = net:cuda()
 end
 
 -- -- -- -- -- -- 3. Define Loss function  -- -- -- -- -- -- -- -- -- -- -- -- --
+-- criterion = nn.MultiCriterion()
+-- criterion = nn.ClassSimplexCriterion(nb_class)
 criterion = nn.CrossEntropyCriterion()
 if mode_cuda == true then
     criterion = criterion:cuda()

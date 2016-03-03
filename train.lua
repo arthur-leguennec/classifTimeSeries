@@ -47,9 +47,9 @@ if trainModel == false then
     print(timer:time().real .. ' seconds for training the network.')
     timer:reset()
     if script then
-        torch.save(fileTrain .. '_script_' .. 'leNet' .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
+        torch.save(fileTrain .. '_script_' .. model .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
     else
-        torch.save(fileTrain .. '_' .. 'leNet' .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
+        torch.save(fileTrain .. '_' .. model .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
     end
 
     timer:stop()

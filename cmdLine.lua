@@ -13,9 +13,11 @@ cmd:option('-fileTrain', '', 'filename for training')
 cmd:option('-fileTest', '', 'filename for testing')
 cmd:option('-noModeCuda', false, 'activate the mode cuda')
 cmd:option('-lr', 0.01, 'learning rate')
+cmd:option('-lrd', 0, 'learning rate decay')
 cmd:option('-iter', 15, 'max iteration for training')
 cmd:option('-saveFile', '', 'path file for save the results')
-cmd:option('-model', 'leNet', 'choose the existing model')
+cmd:option('-model', 'leNet1', 'choose the existing model')
+cmd:option('-dataAugmentation', 1, 'factor of data augmentation')
 cmd:option('-script', false, 'if you run a script for testing several things')
 params = cmd:parse(arg)
 
@@ -37,6 +39,8 @@ end
 
 mode_cuda = not params.noModeCuda
 learningRate = params.lr
+learningRateDecay = params.lrd
 maxIteration = params.iter
 model = params.model
 script = params.script
+dataAug = params.dataAugmentation
