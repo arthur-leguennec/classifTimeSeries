@@ -12,7 +12,10 @@ The project is separate in different files.
 2. Make a convolutional neural network (like leNet). ![check](./images/check.png)
 3. Make several neural network with differents parameters. ![check](./images/check.png)
 4. Run a script for testing differents models with differents hyperparameters.
-5. Understand how use the differents criterions
+5. Run this script on several dataset (like 15-20 for beginning) to obtain a scatter plot.
+6. Understand how use the differents criterions
+7. Save the seed while the initialisation for retrain the model in the same way.
+8. Test several ways while the training and choose the one with the minimum current error.
 
 
 ## Models
