@@ -9,7 +9,7 @@ require 'paths'
 
 local pathFileResult = ''
 
-function addResult(pathData, id, learningRate, maxIter, accuracy)
+function addResult(pathData, id, learningRate, learningRateDecay, maxIter, dataAug, accuracy)
     pathFileResult = pathData .. paths.basename(pathData) .. '_result'
     if paths.filep(pathFileResult) == false then
         csvigo.save({path = pathFileResult, data = {}})
@@ -17,7 +17,7 @@ function addResult(pathData, id, learningRate, maxIter, accuracy)
 
     local fileResult = csvigo.load({path=pathFileResult, mode='raw'})
 
-    fileResult[1] = {'id', 'learning rate', 'max iteration', 'result', 'error rate'}
-    fileResult[#fileResult + 1] = {id, learningRate, maxIter, accuracy, 1-accuracy}
+    fileResult[1] = {'id', 'learning rate', 'learning rate decay', 'max iteration', 'data augmentation' 'result', 'error rate'}
+    fileResult[#fileResult + 1] = {id, learningRate, learningRateDecay, maxIter, dataAug, accuracy, 1-accuracy}
     csvigo.save({path = pathFileResult, data = fileResult})
 end

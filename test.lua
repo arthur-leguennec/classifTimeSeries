@@ -77,7 +77,7 @@ if not script then
 end
 
 if script then
-    addResult(params.pathData, id, learningRate, maxIteration, accuracy)
+    addResult(params.pathData, id, learningRate, learningRateDecay, maxIteration, dataAug, accuracy)
 end
 
 if not script then
