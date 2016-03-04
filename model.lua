@@ -36,15 +36,15 @@ function neuralNetwork1()
     local secondOutputConv = 1
 
     net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv, 1))
-    net:add(nn.ReLU())
-    net:add(nn.TemporalConvolution(10, secondOutputConv, secondInputConv))
-    net:add(nn.ReLU())
+    -- net:add(nn.ReLU())
+    net:add(nn.TemporalConvolution(10, secondOutputConv, secondInputConv, 1))
+    -- net:add(nn.ReLU())
     local num = (math.floor((sizeData - firstInputConv + 1) / firstMaxPool) - secondInputConv + 1) * secondOutputConv
     net:add(nn.View(num))
     net:add(nn.Linear(num, 200))        -- fully connected layer (matrix multiplication between inputs and weights)
-    net:add(nn.ReLU())
+    -- net:add(nn.ReLU())
     net:add(nn.Linear(200, 500))        -- fully connected layer (matrix multiplication between inputs and weights)
-    net:add(nn.ReLU())
+    -- net:add(nn.ReLU())
     net:add(nn.Linear(500, nb_class))
     net:add(nn.LogSoftMax())
 
@@ -55,6 +55,9 @@ function neuralNetwork1()
 end
 
 
+-- Model Lenet
+-- This model
+
 function neuralNetworkLenet1()
     local firstInputConv = 5
     local secondInputConv = 3
@@ -63,11 +66,11 @@ function neuralNetworkLenet1()
     local firstMaxPool = 2
     local secondMaxPool = 2
 
-    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv))
+    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv, 1))
     net:add(nn.ReLU())
     -- net:add(nn.Dropout(0.5))
     net:add(nn.TemporalMaxPooling(firstMaxPool))
-    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv))
+    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv, 1))
     net:add(nn.ReLU())
     -- net:add(nn.Dropout(0.5))
     net:add(nn.TemporalMaxPooling(secondMaxPool))
@@ -99,11 +102,11 @@ function neuralNetworkLenet2()
     local firstMaxPool = 4
     local secondMaxPool = 2
 
-    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv))
+    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv, 1))
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(firstMaxPool))
     net:add(nn.View(math.floor((sizeData - firstInputConv + 1)/firstMaxPool)*firstOutputConv, 1))
-    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv))
+    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv, 1))
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(secondMaxPool))
     local num = (  math.floor((math.floor((sizeData-firstInputConv+1)/firstMaxPool)*firstOutputConv - secondInputConv + 1)/secondMaxPool)*secondOutputConv  )
@@ -131,11 +134,11 @@ function neuralNetworkLenet3()
     local firstMaxPool = 4
     local secondMaxPool = 2
 
-    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv))
+    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv, 1))
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(firstMaxPool))
     net:add(nn.View(math.floor((sizeData - firstInputConv + 1)/firstMaxPool)*firstOutputConv, 1))
-    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv))
+    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv, 1))
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(secondMaxPool))
     local num = (  math.floor((math.floor((sizeData-firstInputConv+1)/firstMaxPool)*firstOutputConv - secondInputConv + 1)/secondMaxPool)*secondOutputConv  )
@@ -163,18 +166,19 @@ function neuralNetwork_MCDCNN()
     local firstMaxPool = 2
     local secondMaxPool = 2
 
-    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv))
-    net:add(nn.Sigmoid())
+    net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv, 1))
+    net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(firstMaxPool))
     net:add(nn.View(math.floor((sizeData - firstInputConv + 1)/firstMaxPool)*firstOutputConv, 1))
-    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv))
-    net:add(nn.Sigmoid())
+    net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv, 1))
+    net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(secondMaxPool))
     local num = (  math.floor((math.floor((sizeData-firstInputConv+1)/firstMaxPool)*firstOutputConv - secondInputConv + 1)/secondMaxPool)*secondOutputConv  )
     net:add(nn.View(num))
-    net:add(nn.Linear(num, 732))
-    net:add(nn.Sigmoid())
-    net:add(nn.Linear(732, nb_class))
+    net:add(nn.Linear(num, num*secondOutputConv))
+    net:add(nn.ReLU())
+    net:add(nn.Linear(num*secondOutputConv, nb_class))
+    net:add(nn.ReLU())
     -- net:add(nn.LogSoftMax())
 
     id = 'conv(1,' .. firstInputConv .. ',' .. firstOutputConv .. ',1)-maxPool(' .. firstMaxPool ..
