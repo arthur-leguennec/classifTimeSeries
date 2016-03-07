@@ -68,23 +68,17 @@ function neuralNetworkLenet1()
 
     net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv, 1))
     net:add(nn.ReLU())
-    -- net:add(nn.Dropout(0.5))
     net:add(nn.TemporalMaxPooling(firstMaxPool))
     net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv, 1))
     net:add(nn.ReLU())
-    -- net:add(nn.Dropout(0.5))
     net:add(nn.TemporalMaxPooling(secondMaxPool))
     local num = (  math.floor((math.floor((sizeData-firstInputConv+1)/firstMaxPool)*firstOutputConv - secondInputConv + 1)/secondMaxPool)*secondOutputConv  )
-
     net:add(nn.View(num))
     net:add(nn.Linear(num, 120))
     net:add(nn.ReLU())
-    -- net:add(nn.Dropout(0.5))
     net:add(nn.Linear(120, 84))
     net:add(nn.ReLU())
-    -- net:add(nn.Dropout())
     net:add(nn.Linear(84, nb_class))
-    -- net:add(nn.LogSoftMax())
 
     id = 'conv(1,' .. firstInputConv .. ',' .. firstOutputConv .. ',1)-maxPool(' .. firstMaxPool ..
         ',1)-conv(1,' .. secondInputConv .. ',' .. secondOutputConv .. ',1)-maxPool(' .. secondMaxPool ..
@@ -97,8 +91,8 @@ end
 function neuralNetworkLenet2()
     local firstInputConv = 5
     local secondInputConv = 3
-    local firstOutputConv = 20
-    local secondOutputConv = 10
+    local firstOutputConv = 10
+    local secondOutputConv = 3
     local firstMaxPool = 4
     local secondMaxPool = 2
 
@@ -111,16 +105,16 @@ function neuralNetworkLenet2()
     net:add(nn.TemporalMaxPooling(secondMaxPool))
     local num = (  math.floor((math.floor((sizeData-firstInputConv+1)/firstMaxPool)*firstOutputConv - secondInputConv + 1)/secondMaxPool)*secondOutputConv  )
     net:add(nn.View(num))
-    net:add(nn.Linear(num, 120))
+    net:add(nn.Linear(num, num/3))
     net:add(nn.ReLU())
-    net:add(nn.Linear(120, 84))
+    net:add(nn.Linear(num/3, num/6))
     net:add(nn.ReLU())
-    net:add(nn.Linear(84, nb_class))
+    net:add(nn.Linear(num/6, nb_class))
     -- net:add(nn.LogSoftMax())
 
     id = 'conv(1,' .. firstInputConv .. ',' .. firstOutputConv .. ',1)-maxPool(' .. firstMaxPool ..
         ',1)-conv(1,' .. secondInputConv .. ',' .. secondOutputConv .. ',1)-maxPool(' .. secondMaxPool ..
-        ',1)-' .. num .. '-120-84'
+        ',1)-' .. num .. '-'.. num/3 .. '-' .. num/6
 
     print('Lenet2\n' .. net:__tostring())       -- print the model
 end
@@ -169,11 +163,18 @@ function neuralNetwork_MCDCNN()
     net:add(nn.TemporalConvolution(1, firstOutputConv, firstInputConv, 1))
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(firstMaxPool))
-    net:add(nn.View(math.floor((sizeData - firstInputConv + 1)/firstMaxPool)*firstOutputConv, 1))
+    local num1 = math.floor((sizeData - firstInputConv + 1)/firstMaxPool)*firstOutputConv
+    net:add(nn.View(num1, 1))
     net:add(nn.TemporalConvolution(1, secondOutputConv, secondInputConv, 1))
     net:add(nn.ReLU())
     net:add(nn.TemporalMaxPooling(secondMaxPool))
+    local num2 = math.floor((num1 - secondInputConv + 1)/secondMaxPool)*secondOutputConv
+    net:add(nn.View(num2, 1))
+    -- net:add(nn.ReLU())
+    net:add(nn.TemporalConvolution(1,1,1,1))
     local num = (  math.floor((math.floor((sizeData-firstInputConv+1)/firstMaxPool)*firstOutputConv - secondInputConv + 1)/secondMaxPool)*secondOutputConv  )
+    -- net:add(nn.LookupTable(num,1))
+    net:add(nn.ReLU())
     net:add(nn.View(num))
     net:add(nn.Linear(num, num*secondOutputConv))
     net:add(nn.ReLU())
@@ -183,7 +184,7 @@ function neuralNetwork_MCDCNN()
 
     id = 'conv(1,' .. firstInputConv .. ',' .. firstOutputConv .. ',1)-maxPool(' .. firstMaxPool ..
         ',1)-conv(1,' .. secondInputConv .. ',' .. secondOutputConv .. ',1)-maxPool(' .. secondMaxPool ..
-        ',1)-' .. num .. '-732'
+        ',1)-conv(1,1,1,1)-' .. num .. '-732'
 
     print('MC-DCNN\n' .. net:__tostring())       -- print the model
 end
