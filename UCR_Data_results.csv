@@ -1,87 +1,87 @@
-Name,1-NN Euclidean Distance,1-NN Best Warping Window DTW,"1-NN DTW, no Warping Window"
-Synthetic Control,0.12,0.017 (6),0.007
-Gun-Point,0.087,0.087 (0),0.093
-CBF,0.148,0.004 (11),0.003
-Face (all),0.286,0.192 (3),0.192
-OSU Leaf,0.479,0.388 (7),0.409
-Swedish Leaf,0.211,0.154 (2),0.208
-50Words,0.369,0.242 (6),0.31
-Trace,0.24,0.010 (3),0
-Two Patterns,0.09,0.002 (4),0
-Wafer,0.005,0.005 (1),0.02
-Face (four),0.216,0.114 (2),0.17
-Lightning-2,0.246,0.131 (6),0.131
-Lightning-7,0.425,0.288 (5),0.274
-ECG,0.12,0.120 (0),0.23
-Adiac,0.389,0.391 (3),0.396
-Yoga,0.17,0.155 (2),0.164
-Fish,0.217,0.154(4),0.177
-Plane,0.038,0.000 (6),0
-Car,0.267,0.233 (1),0.267
-Beef,0.333,0.333 (0),0.367
-Coffee,0,0.000 (0),0
-OliveOil,0.133,0.133 (0),0.167
-CinC_ECG_torso,0.103,0.07 (1),0.349
-ChlorineConcentration,0.35,0.35 (0),0.352
-DiatomSizeReduction,0.065,0.065 (0),0.033
-ECGFiveDays,0.203,0.203 (0),0.232
-FacesUCR,0.231,0.088 (12),0.095
-Haptics,0.63,0.588 (2),0.623
-InlineSkate,0.658,0.613 (14),0.616
-ItalyPowerDemand,0.045,0.045 (0),0.05
-MALLAT,0.086,0.086 (0),0.066
-MedicalImages,0.316,0.253 (20),0.263
-MoteStrain,0.121,0.134 (1),0.165
-SonyAIBORobot SurfaceII,0.141,0.141 (0),0.169
-SonyAIBORobot Surface,0.305,0.305 (0),0.275
-StarLightCurves,0.151,0.095 (16),0.093
-Symbols,0.1,0.062 (8),0.05
-TwoLeadECG,0.253,0.132 (5),0.096
-WordsSynonyms,0.382,0.252 (8),0.351
-Cricket_X,0.423,0.228 (10),0.246
-Cricket_Y,0.433,0.238 (17),0.256
-Cricket_Z,0.413,0.254 (5),0.246
-uWaveGestureLibrary_X,0.261,0.227 (4),0.273
-uWaveGestureLibrary_Y,0.338,0.301 (4),0.366
-uWaveGestureLibrary_Z,0.35,0.322 (6),0.342
-Non-Invasive Fetal ECG Thorax1,0.171,0.185 (1),0.209
-Non-Invasive Fetal ECG Thorax2,0.12,0.129 (1),0.135
-InsectWingbeatSound,0.438,0.422 (2),0.645
-ECG5000,0.075,0.075 (1),0.076
-ArrowHead,0.2,0.200 (0),0.297
-BeetleFly,0.25,0.300 (7),0.3
-BirdChicken,0.45,0.300(6),0.25
-Ham,0.4,0.400 (0),0.533
-Herring,0.484,0.469 (5),0.469
-PhalangesOutlinesCorrect,0.239,0.239 (0),0.272
-ProximalPhalanxOutlineAgeGroup,0.215,0.215 (0),0.195
-ProximalPhalanxOutlineCorrect,0.192,0.210 (1),0.216
-ProximalPhalanxTW,0.292,0.263 (6),0.263
-ToeSegmentation1,0.32,0.250 (8),0.228
-ToeSegmentation2,0.192,0.092 (5),0.162
-DistalPhalanxOutlineAgeGroup,0.218,0.228 (1),0.208
-DistalPhalanxOutlineCorrect,0.248,0.232 (2),0.232
-DistalPhalanxTW,0.273,0.272 (0),0.29
-Earthquakes,0.326,0.258 (22),0.258
-MiddlePhalanxOutlineAgeGroup,0.26,0.253 (5),0.25
-MiddlePhalanxOutlineCorrect,0.247,0.318 (1),0.352
-MiddlePhalanxTW,0.439,0.419 (2),0.416
-ShapeletSim,0.461,0.300 (3),0.35
-Wine,0.389,0.389 (0),0.426
-WordSynonyms,0.382,0.252 (8),0.351
-Computers,0.424,0.380 (13),0.3
-ElectricDevices,0.45,0.376 (14),0.399
-FordA,0.341,0.341 (0),0.438
-FordB,0.442,0.414 (1),0.406
-HandOutlines,0.199,0.197 (1),0.202
-LargeKitchenAppliances,0.507,0.205 (94),0.205
-Meat,0.067,0.067 (0),0.067
-Phoneme�(readme),0.891,0.773 (14),0.772
-RefrigerationDevices,0.605,0.560 (8),0.536
-ScreenType,0.64,0.589 (17),0.603
-ShapesAll,0.248,0.198 (4),0.232
-SmallKitchenAppliances,0.659,0.328 (15),0.357
-Strawberry,0.062,0.062 (0),0.06
-UWaveGestureLibraryAll,0.052,0.034 (4),0.108
-Worms,0.635,0.586 (3),0.536
-WormsTwoClass,0.414,0.414 (9),0.337
+Name,1-NN Euclidean Distance,1-NN Best Warping Window DTW,"1-NN DTW, no Warping Window",leNet2
+CBF,0.148,0.004 (11),0.003,0.00667
+ECGFiveDays,0.203,0.203 (0),0.232,0.0267
+DiatomSizeReduction,0.065,0.065 (0),0.033,0.0392
+Gun_Point,0.087,0.087 (0),0.093,0.04
+CinC_ECG_torso,0.103,0.07 (1),0.349,0.0536
+ECG5000,0.075,0.075 (1),0.076,0.0689
+ECG200,0.12,0.120 (0),0.23,0.08
+BeetleFly,0.25,0.300 (7),0.3,0.1
+FacesUCR,0.231,0.088 (12),0.095,0.146
+DistalPhalanxOutlineAgeGroup,0.218,0.228 (1),0.208,0.1475
+FaceFour,0.216,0.114 (2),0.17,0.148
+BirdChicken,0.45,0.300(6),0.25,0.15
+FISH,0.217,0.154(4),0.177,0.16
+Car,0.267,0.233 (1),0.267,0.167
+Earthquakes,0.326,0.258 (22),0.258,0.18
+ArrowHead,0.2,0.200 (0),0.297,0.188
+DistalPhalanxOutlineCorrect,0.248,0.232 (2),0.232,0.193
+Beef,0.333,0.333 (0),0.367,0.2
+FordA,0.341,0.341 (0),0.438,0.206
+ChlorineConcentration,0.35,0.35 (0),0.352,0.209
+ProximalPhalanxTW,0.292,0.263 (6),0.263,0.225
+FaceAll,0.286,0.192 (3),0.192,0.243
+50words,0.369,0.242 (6),0.31,0.28
+Ham,0.4,0.400 (0),0.533,0.286
+Cricket_X,0.423,0.228 (10),0.246,0.354
+Cricket_Z,0.413,0.254 (5),0.246,0.359
+ElectricDevices,0.45,0.376 (14),0.399,0.362
+FordB,0.442,0.414 (1),0.406,0.363
+Cricket_Y,0.433,0.238 (17),0.256,0.374
+Computers,0.424,0.380 (13),0.3,0.404
+Adiac,0.389,0.391 (3),0.396,0.432
+synthetic_control,0.12,0.017 (6),0.007,
+OSULeaf,0.479,0.388 (7),0.409,
+SwedishLeaf,0.211,0.154 (2),0.208,
+Trace,0.24,0.010 (3),0,
+Two_Patterns,0.09,0.002 (4),0,
+wafer,0.005,0.005 (1),0.02,
+Lightning2,0.246,0.131 (6),0.131,
+Lightning7,0.425,0.288 (5),0.274,
+yoga,0.17,0.155 (2),0.164,
+Plane,0.038,0.000 (6),0,
+Coffee,0,0.000 (0),0,
+OliveOil,0.133,0.133 (0),0.167,
+Haptics,0.63,0.588 (2),0.623,
+InlineSkate,0.658,0.613 (14),0.616,
+ItalyPowerDemand,0.045,0.045 (0),0.05,
+MALLAT,0.086,0.086 (0),0.066,
+MedicalImages,0.316,0.253 (20),0.263,
+MoteStrain,0.121,0.134 (1),0.165,
+SonyAIBORobotSurfaceII,0.141,0.141 (0),0.169,
+SonyAIBORobotSurface,0.305,0.305 (0),0.275,
+StarLightCurves,0.151,0.095 (16),0.093,
+Symbols,0.1,0.062 (8),0.05,
+TwoLeadECG,0.253,0.132 (5),0.096,
+WordsSynonyms,0.382,0.252 (8),0.351,
+uWaveGestureLibrary_X,0.261,0.227 (4),0.273,
+uWaveGestureLibrary_Y,0.338,0.301 (4),0.366,
+uWaveGestureLibrary_Z,0.35,0.322 (6),0.342,
+NonInvasiveFatalECG_Thorax1,0.171,0.185 (1),0.209,
+NonInvasiveFatalECG_Thorax2,0.12,0.129 (1),0.135,
+InsectWingbeatSound,0.438,0.422 (2),0.645,
+Herring,0.484,0.469 (5),0.469,
+PhalangesOutlinesCorrect,0.239,0.239 (0),0.272,
+ProximalPhalanxOutlineAgeGroup,0.215,0.215 (0),0.195,
+ProximalPhalanxOutlineCorrect,0.192,0.210 (1),0.216,
+ToeSegmentation1,0.32,0.250 (8),0.228,
+ToeSegmentation2,0.192,0.092 (5),0.162,
+DistalPhalanxTW,0.273,0.272 (0),0.29,
+MiddlePhalanxOutlineAgeGroup,0.26,0.253 (5),0.25,
+MiddlePhalanxOutlineCorrect,0.247,0.318 (1),0.352,
+MiddlePhalanxTW,0.439,0.419 (2),0.416,
+ShapeletSim,0.461,0.300 (3),0.35,
+Wine,0.389,0.389 (0),0.426,
+WordSynonyms,0.382,0.252 (8),0.351,
+HandOutlines,0.199,0.197 (1),0.202,
+LargeKitchenAppliances,0.507,0.205 (94),0.205,
+Meat,0.067,0.067 (0),0.067,
+Phoneme,0.891,0.773 (14),0.772,
+RefrigerationDevices,0.605,0.560 (8),0.536,
+ScreenType,0.64,0.589 (17),0.603,
+ShapesAll,0.248,0.198 (4),0.232,
+SmallKitchenAppliances,0.659,0.328 (15),0.357,
+Strawberry,0.062,0.062 (0),0.06,
+UWaveGestureLibraryAll,0.052,0.034 (4),0.108,
+Worms,0.635,0.586 (3),0.536,
+WormsTwoClass,0.414,0.414 (9),0.337,
