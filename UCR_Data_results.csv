@@ -1,5 +1,4 @@
-Name,1-NN Euclidean Distance,"1-NN Best Warping Window DTW (r)
-Note that r is the percentage of time series length","1-NN DTW, no Warping Window"
+Name,1-NN Euclidean Distance,1-NN Best Warping Window DTW,"1-NN DTW, no Warping Window"
 Synthetic Control,0.12,0.017 (6),0.007
 Gun-Point,0.087,0.087 (0),0.093
 CBF,0.148,0.004 (11),0.003
@@ -77,7 +76,7 @@ FordB,0.442,0.414 (1),0.406
 HandOutlines,0.199,0.197 (1),0.202
 LargeKitchenAppliances,0.507,0.205 (94),0.205
 Meat,0.067,0.067 (0),0.067
-Phoneme (readme),0.891,0.773 (14),0.772
+Phoneme�(readme),0.891,0.773 (14),0.772
 RefrigerationDevices,0.605,0.560 (8),0.536
 ScreenType,0.64,0.589 (17),0.603
 ShapesAll,0.248,0.198 (4),0.232
