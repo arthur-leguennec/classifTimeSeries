@@ -1,3 +1,9 @@
+###############################################################
+###     Author: Arthur Le Guennec                           ###
+###     Creation file: 03/07/2016                           ###
+###     Description: Script python for collect results      ###
+###############################################################
+
 import csv
 import os
 import sys

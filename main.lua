@@ -44,7 +44,6 @@ end
 if dataAug > 1 then
     trainset = dataAugmentationTimeSeries(trainset, dataAug)
 end
-trainset = shuffledDataset(trainset)
 testset, _ = conversionCSV(fileTest, mode_cuda)
 print('\nThere are ' .. nb_class .. ' classes in this datasets.')
 print('\n\n')
