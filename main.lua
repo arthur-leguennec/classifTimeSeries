@@ -25,6 +25,7 @@ print('||***************************************************************||')
 print('|+===============================================================+|')
 print('+=================================================================+\n\n')
 
+cutorch.synchronizeAll()
 timerGlobal = torch.Timer()
 nb_class = 0
 sizeData = 0
@@ -75,8 +76,6 @@ if mode_cuda == true then
 end
 
 -- -- -- -- -- -- 3. Define Loss function  -- -- -- -- -- -- -- -- -- -- -- -- --
--- criterion = nn.MultiCriterion()
--- criterion = nn.ClassSimplexCriterion(nb_class)
 criterion = nn.CrossEntropyCriterion()
 if mode_cuda == true then
     criterion = criterion:cuda()

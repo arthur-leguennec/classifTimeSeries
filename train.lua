@@ -12,7 +12,68 @@ local answer
 local pathTrainModelLoad
 local pathTrainModelSave
 local trainModel = false
-local trainModelExist = false
+
+local function training(params)
+    local iteration = 1
+    local maxIteration = params.maxIteration or 50
+    local momentum = params.momentum or 0.05
+    local learningRateDecay = params.learningRateDecay or 0.00005
+    local currentLearningRate = params.learningRate or 0.1
+    local minError = params.minError or 0.00001
+    local module = params.module
+    local criterion = params.criterion
+    local verbose = params.verbose and true
+    local dataset = params.dataset
+    local mini_batch_size = params.miniBatchSize or 1
+
+    local listCurrentError = {}
+
+    print("# StochasticGradientEx: training")
+
+    while true do
+        local currentError = 0
+        for t = 1,(dataset:size()/mini_batch_size) do
+            local shuffledIndices = torch.randperm(dataset:size(), 'torch.LongTensor')
+            local example = dataset[shuffledIndices[t]]
+            local input = example[1]
+            local target = example[2]
+
+            currentError = currentError + criterion:forward(module:forward(input), target)
+
+            module:updateGradInput(input, criterion:updateGradInput(module.output, target))
+            module:accUpdateGradParameters(input, criterion.gradInput, currentLearningRate)
+        end
+
+        currentError = currentError * mini_batch_size / dataset:size()
+
+        if verbose then
+            print("# current error = " .. currentError)
+        end
+
+        listCurrentError[iteration] = currentError
+        iteration = iteration + 1
+        currentLearningRate = learningRate/(1+iteration*learningRateDecay)
+
+        if learningRate > 0.00001 then
+            learningRate = learningRate * 0.99
+        else
+            learningRate = 0.00001
+        end
+
+        if maxIteration > 0 and iteration > maxIteration then
+            print("# StochasticGradientEx: you have reached the maximum number of iterations")
+            print("# training error = " .. currentError)
+            trainingError = currentError
+            break
+        end
+    end
+
+    if #listCurrentError > 0 then
+        return listCurrentError
+    else
+        return nil
+    end
+end
 
 net:training()
 
@@ -37,20 +98,67 @@ if not script then
 end
 
 if trainModel == false then
-    trainer = nn.StochasticGradient(net, criterion)
-    trainer.learningRate = learningRate
-    trainer.maxIteration = maxIteration
+    local params = {}
+    params.learningRate = learningRate
+    params.maxIteration = 20
+    params.verbose = false
+    params.module = net
+    params.criterion = criterion
+    params.momentum = momentum
+    params.learningRateDecay = learningRateDecay
+    params.dataset = trainset
+    params.miniBatchSize = 5
+
+    local listCurrentError = {}
+
+    local listError = {}
+    local seedCPU
+    local seedGPU
+    if mode_cuda then
+        seedGPU = cutorch.seedAll()
+        seedCPU = torch.seed()
+        cutorch.manualSeedAll(seedGPU)
+        torch.manualSeed(seedCPU)
+        print("\n[CUDA] The seed is: " .. cutorch.initialSeed())
+        print("[CPU] The seed is: " .. torch.initialSeed())
+
+    else
+        seedCPU = torch.seed()
+        torch.manualSeed(seedCPU)
+        print("\n[NO CUDA] The seed is: " .. torch.initialSeed())
+    end
+    local seedShuffledIndices = torch.getRNGState()
+
+    for i=1,7 do
+        net:zeroGradParameters()
+        net:reset()
+        torch.setRNGState(seedShuffledIndices)
+        listCurrentError[i] = training(params)
+        listError[listCurrentError[i][#listCurrentError[i]]] = net:clone()
+    end
+
+    local minError = next(listError)
+    local optimNet = listError[minError]
+    for k,v in pairs(listError) do
+        if k < minError then
+            minError, optimNet = k, v
+        end
+    end
+
+    print("\nWe choose the initialization with the smallest error.")
+    print("So, we choose " .. minError)
+
+    net = optimNet:clone()
+    params.module = net
+    params.maxIteration = maxIteration
+    params.verbose = true
     timer = torch.Timer()
-    trainer:train(trainset)
+    torch.setRNGState(seedShuffledIndices)
+    listCurrentError = training(params)
 
     timer:stop()
     print(timer:time().real .. ' seconds for training the network.')
     timer:reset()
-    if script then
-        -- torch.save(fileTrain .. '_script_' .. model .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
-    else
-        torch.save(fileTrain .. '_' .. model .. '_' .. learningRate .. '_' .. maxIteration .. '.t7', net)
-    end
 
     timer:stop()
 end
