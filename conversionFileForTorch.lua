@@ -83,6 +83,10 @@ function conversionCSV(filename, mode_cuda)
 end
 
 
+function mixDataset(dataset1, dataset2)
+end
+
+
 function shuffledDataset(dataset)
     y = torch.randperm(dataset:size())
     local datasetTmp = {}

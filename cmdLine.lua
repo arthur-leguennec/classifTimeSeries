@@ -16,33 +16,34 @@ cmd:option('-lr', 0.01, 'learning rate')
 cmd:option('-lrd', 0, 'learning rate decay')
 cmd:option('-momentum', 0, 'momentum')
 cmd:option('-iter', 15, 'max iteration for training')
-cmd:option('-saveFile', '', 'path file for save the results')
-cmd:option('-model', 'leNet1', 'choose the existing model')
+cmd:option('-model', 'leNet2', 'choose the existing model')
 cmd:option('-dataAugmentation', 1, 'factor of data augmentation')
 cmd:option('-script', false, 'if you run a script for testing several things')
-paramsCmd = cmd:parse(arg)
+cmd:option('-miniBatchSize', 1, 'size of the mini batch size')
+params = cmd:parse(arg)
 
-if paramsCmd.pathData == '' then
-    if paramsCmd.fileTrain == '' or paramsCmd.fileTest == '' then
+if params.pathData == '' then
+    if params.fileTrain == '' or params.fileTest == '' then
         fileTrain = PATH_UCR .. '/ECG5000/ECG5000_TRAIN'
         fileTest = PATH_UCR .. '/ECG5000/ECG5000_TEST'
         saveFile = PATH_UCR .. './ECG5000/ECG5000_result'
     else
-        fileTrain = paramsCmd.fileTrain
-        fileTest = paramsCmd.fileTest
-        saveFile = paramsCmd.saveFile
+        fileTrain = params.fileTrain
+        fileTest = params.fileTest
+        saveFile = params.saveFile
     end
 else
-    fileTrain = paramsCmd.pathData .. paths.basename(paramsCmd.pathData) .. '_TRAIN'
-    fileTest = paramsCmd.pathData .. paths.basename(paramsCmd.pathData) .. '_TEST'
-    saveFile = paramsCmd.saveFile .. paths.basename(paramsCmd.saveFile) .. '_result'
+    fileTrain = params.pathData .. paths.basename(params.pathData) .. '_TRAIN'
+    fileTest = params.pathData .. paths.basename(params.pathData) .. '_TEST'
+    saveFile = params.pathData .. paths.basename(params.pathData) .. '_result'
 end
 
-mode_cuda = not paramsCmd.noModeCuda
-learningRate = paramsCmd.lr
-learningRateDecay = paramsCmd.lrd
-maxIteration = paramsCmd.iter
-model = paramsCmd.model
-script = paramsCmd.script
-dataAug = paramsCmd.dataAugmentation
-momentum = paramsCmd.momentum
+mode_cuda = not params.noModeCuda
+learningRate = params.lr
+learningRateDecay = params.lrd
+maxIteration = params.iter
+model = params.model
+script = params.script
+dataAug = params.dataAugmentation
+momentum = params.momentum
+miniBatchSize = params.miniBatchSize

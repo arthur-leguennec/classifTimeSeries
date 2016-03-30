@@ -10,7 +10,7 @@ require 'paths'
 local pathFileResult = ''
 
 function addResult(pathData, model, id, learningRate, learningRateDecay, maxIter, dataAug, accuracy)
-    pathFileResult = pathData .. paths.basename(pathData) .. '_result'
+    pathFileResult = pathData
     if paths.filep(pathFileResult) == false then
         csvigo.save({path = pathFileResult, data = {}})
     end

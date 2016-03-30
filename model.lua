@@ -124,6 +124,7 @@ function neuralNetworkLenet2()
     net:add(nn.Linear(math.floor(num/3), math.floor(num/6)))
     net:add(nn.Tanh())
     net:add(nn.Linear(math.floor(num/6), nb_class))
+    -- cudnn.convert(net, cudnn)
     -- net:add(nn.LogSoftMax())
 
     id = 'conv(1,' .. firstInputConv .. ',' .. firstOutputConv .. ',1)-maxPool(' .. firstMaxPool ..

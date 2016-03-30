@@ -8,6 +8,10 @@ require 'nn';
 require 'cunn';
 require 'itorch';
 require 'paths';
+-- require 'cudnn';
+-- cudnn.benchmark = true
+-- cudnn.fastest = true
+-- cudnn.verbose = true
 
 require("conversionFileForTorch");
 require("dataAugmentation");
@@ -45,6 +49,7 @@ end
 if dataAug > 1 then
     trainset = dataAugmentationTimeSeries(trainset, dataAug)
 end
+-- trainset = dataAugmentationTimeSeriesPlus(trainset, classes)
 testset, _ = conversionCSV(fileTest, mode_cuda)
 print('\nThere are ' .. nb_class .. ' classes in this datasets.')
 print('\n\n')
@@ -67,7 +72,7 @@ elseif model == 'leNet2' then
 elseif model == 'mcdcnn' then
     neuralNetwork_MCDCNN()
 else
-    neuralNetworkLenet1()
+    neuralNetworkLenet2()
 end
 print('\n' .. id)
 

@@ -25,15 +25,23 @@ local function training(params)
     local verbose = params.verbose and true
     local dataset = params.dataset
     local mini_batch_size = params.miniBatchSize or 1
+    local i = 0
+    local t
 
     local listCurrentError = {}
 
     print("# StochasticGradientEx: training")
 
+    local shuffledIndices = torch.randperm(dataset:size(), 'torch.LongTensor')
+
     while true do
         local currentError = 0
-        for t = 1,(dataset:size()/mini_batch_size) do
-            local shuffledIndices = torch.randperm(dataset:size(), 'torch.LongTensor')
+
+        t = 1
+        while t <= (dataset:size()/mini_batch_size) do
+            if t+i > dataset:size() then
+                i = 0
+            end
             local example = dataset[shuffledIndices[t]]
             local input = example[1]
             local target = example[2]
@@ -42,7 +50,9 @@ local function training(params)
 
             module:updateGradInput(input, criterion:updateGradInput(module.output, target))
             module:accUpdateGradParameters(input, criterion.gradInput, currentLearningRate)
+            t = t + 1
         end
+        i = i + mini_batch_size
 
         currentError = currentError * mini_batch_size / dataset:size()
 
@@ -53,12 +63,6 @@ local function training(params)
         listCurrentError[iteration] = currentError
         iteration = iteration + 1
         currentLearningRate = learningRate/(1+iteration*learningRateDecay)
-
-        if learningRate > 0.00001 then
-            learningRate = learningRate * 0.99
-        else
-            learningRate = 0.00001
-        end
 
         if maxIteration > 0 and iteration > maxIteration then
             print("# StochasticGradientEx: you have reached the maximum number of iterations")
@@ -107,7 +111,7 @@ if trainModel == false then
     params.momentum = momentum
     params.learningRateDecay = learningRateDecay
     params.dataset = trainset
-    params.miniBatchSize = 5
+    params.miniBatchSize = miniBatchSize
 
     local listCurrentError = {}
 
@@ -121,7 +125,6 @@ if trainModel == false then
         torch.manualSeed(seedCPU)
         print("\n[CUDA] The seed is: " .. cutorch.initialSeed())
         print("[CPU] The seed is: " .. torch.initialSeed())
-
     else
         seedCPU = torch.seed()
         torch.manualSeed(seedCPU)
@@ -134,6 +137,7 @@ if trainModel == false then
         net:reset()
         torch.setRNGState(seedShuffledIndices)
         listCurrentError[i] = training(params)
+        torch.save('test.t7', net)
         listError[listCurrentError[i][#listCurrentError[i]]] = net:clone()
     end
 
@@ -144,6 +148,7 @@ if trainModel == false then
             minError, optimNet = k, v
         end
     end
+    listError = nil
 
     print("\nWe choose the initialization with the smallest error.")
     print("So, we choose " .. minError)

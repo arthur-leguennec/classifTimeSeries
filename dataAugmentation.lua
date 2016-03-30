@@ -8,6 +8,23 @@ require 'torch';
 require 'cunn';
 require 'math';
 
+
+local function createData(data)
+    local dataEx = data:clone()
+    local size = (#data)[1]
+    for i=1,size do
+        local num = math.random() - 0.5
+        if num < 0 then
+            dataEx[i][1] = dataEx[i][1] * (1.005)
+        elseif num > 0 then
+            dataEx[i][1] = dataEx[i][1] * (0.995)
+        else
+            dataEx[i][1] = dataEx[i][1]
+        end
+    end
+    return dataEx
+end
+
 function dataAugmentationTimeSeries(dataset, z)
     -- Test for data augmentation
     local size = dataset:size()
@@ -19,16 +36,7 @@ function dataAugmentationTimeSeries(dataset, z)
             print(i)
         end
         dataset.label[i] = dataset.label[i-size]
-        for j=1,dataset:sizeData() do
-            local num = math.random() - 0.5
-            if num < 0 then
-                dataset.data[i][j][1] = dataset.data[i-size][j][1] * (1.005)
-            elseif num > 0 then
-                dataset.data[i][j][1] = dataset.data[i-size][j][1] * (0.995)
-            else
-                dataset.data[i][j][1] = dataset.data[i-size][j][1]
-            end
-        end
+        dataset.data[i] = createData(dataset.data[i])
     end
     print(dataset)
     return dataset
@@ -42,6 +50,7 @@ function dataAugmentationTimeSeriesPlus(dataset, classes)
     local nb_class = 0
     local num_classes = {}
     local num_classes_missing = {}
+    local stock = {{}}
 
     -- initialization of variables
     for k in pairs(classes) do
@@ -52,7 +61,11 @@ function dataAugmentationTimeSeriesPlus(dataset, classes)
 
     -- how many label in each classes
     for i=1,dataset:size() do
-        num_classes[dataset[i][2]] = num_classes[dataset[i][2]] + 1
+        if not stock[dataset.label[i]] then
+            stock[dataset.label[i]] = {}
+        end
+        num_classes[dataset.label[i]] = num_classes[dataset.label[i]] + 1
+        table.insert(stock[dataset.label[i]], dataset.data[i])
     end
 
     -- what is the max label ?
@@ -64,31 +77,27 @@ function dataAugmentationTimeSeriesPlus(dataset, classes)
         end
     end
 
+    dataset.data = dataset.data:resize(max * nb_class, dataset:sizeData(), 1)
+    dataset.label = dataset.label:resize(max * nb_class)
+
     -- how many by each classes
     for k,v in pairs(num_classes) do
         num_classes_missing[k] = max - v
     end
 
+    local t = 1
     for k,v in pairs(num_classes_missing) do
         for i=1,v do
-            
+            local randomIndice = math.random(1,num_classes[k])
+            local dataEx = createData(stock[k][randomIndice])
+            table.insert(stock[k], dataEx)
+            num_classes[k] = num_classes[k] + 1
+            dataset.label[size+t] = k
+            dataset.data[size+t] = dataEx
+            t = t + 1
         end
     end
-end
 
-
-local function createData(data)
-    local dataEx = data:clone()
-    local size = #data
-    for i=1,size do
-        local num = math.random() - 0.5
-        if num < 0 then
-            dataEx[i] = dataEx[i] * (1.005)
-        elseif num > 0 then
-            dataEx[i] = dataEx[i] * (0.995)
-        else
-            dataEx[i] = dataEx[i]
-        end
-    end
-    return dataEx
+    print(dataset)
+    return dataset
 end
