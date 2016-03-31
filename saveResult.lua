@@ -7,6 +7,7 @@
 require 'csvigo'
 require 'paths'
 
+
 local pathFileResult = ''
 
 function addResult(pathData, model, id, learningRate, learningRateDecay, maxIter, dataAug, accuracy)
